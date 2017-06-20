@@ -1,0 +1,40 @@
+php:
+    build: ./php-apache/
+    ports:
+        - 80:80
+    expose:
+        - 9000
+    links:
+        - mysql
+    volumes_from:
+        - app
+app:
+    image: php:5.6-apache
+    volumes:
+        - ./www:/var/www/html
+    command: "true"
+mysql:
+    image: mysql:latest
+    ports:
+    - 3306:3306
+    volumes_from:
+        - data
+    environment:
+        MYSQL_ROOT_PASSWORD: MYPASSWORD
+        MYSQL_DATABASE: MYDB
+        MYSQL_USER: MYUSER
+        MYSQL_PASSWORD: MYPASSWORD
+
+data:
+    image: mysql:latest
+    volumes:
+        - ./mysql:/var/lib/mysql
+    command: "true"
+phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    ports:
+        - 4000:80
+    links:
+        - mysql
+    environment:
+        PMA_HOST: mysql
